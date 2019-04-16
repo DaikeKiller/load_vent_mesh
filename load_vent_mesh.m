@@ -23,9 +23,7 @@ function [points, type, base, apex, lat, Z, T] = load_vent_mesh(filename)
 %       Z,T: a [nt, nz] array with the height and angular coordinate values
 %       in meshgrid form. These values are valid for all frames.
 %
-%   The FILENAME parameter determines the file to be open. In case this
-%   parameter is an empty string, a loadfile window (See UIGETFILE) will
-%   open for the user to select a file.
+%   The FILENAME parameter determines the file to be open.
 %
 %   Example:
 %       % load ventricular mesh
@@ -57,16 +55,6 @@ function [points, type, base, apex, lat, Z, T] = load_vent_mesh(filename)
 % You should have received a copy of the GNU General Public License
 % along with load_vent_mesh. If not, see <https://www.gnu.org/licenses/>.
 
-
-if isempty(filename)
-    [file, path, indx] = uigetfile('*.vnt');
-    filename = [path, file];
-end
-
-if isempty(filename)
-    return
-end
-
 %% Constants
 
 RASTER_Z = 128;
@@ -85,8 +73,8 @@ end
 
 
 % Read name of original ultrasound file
-filename_len = fread(fid, 1, 'int');
-filename = fread(fid, filename_len, 'char');
+fname_len = fread(fid, 1, 'int');
+fname = fread(fid, fname_len, 'char');
 
 % Read number of volumes ("frames")
 nVols = fread(fid,1,'int');
@@ -108,7 +96,7 @@ vframesize = RasterZ * RasterT;
 fclose(fid);
 
 %% Memoory Map Data
-m = memmapfile([path, file], 'Offset', offset, ...
+m = memmapfile(filename, 'Offset', offset, ...
     'Format', { ...
         'single', [3], 'base'; ...
         'single', [3], 'apex'; ...
